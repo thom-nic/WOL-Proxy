@@ -161,7 +161,7 @@
 					<jar destfile="target/${applet.name}.jar" 
 						basedir="target/classes" includes="**/applet/*.class" />
 					
-					<signjar keystore="cert/keystore.jks" storepass="test123" alias="wol2"
+					<signjar keystore="cert/wol.jks" storepass="test1234" alias="wol"
 						jar="target/${applet.name}.jar" />
               </tasks>
             </configuration>

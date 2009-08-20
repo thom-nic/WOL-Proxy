@@ -16,8 +16,8 @@
   			<property name="driverClassName" value="${sql.driver}" />
   			<property name="username" value="${sql.user}" />
   			<property name="password" value="${sql.passwd}" />
-  			<property name="maxActive" value="50" />
-  			<property name="maxIdle" value="10" />
+  			<property name="maxActive" value="20" />
+  			<property name="maxIdle" value="5" />
   			<property name="poolPreparedStatements" value="true" />
   		</bean>
   	</constructor-arg>

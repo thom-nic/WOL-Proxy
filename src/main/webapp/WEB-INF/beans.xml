@@ -44,7 +44,7 @@
 	<bean id='stats' class='com.enernoc.rnd.wolproxy.StatsService'>
 		<property name="db" ref="db" />
 		<dwr:remote javascript="Stats">
-			<dwr:include method="getStats" />
+			<dwr:include method="showStats" />
 		</dwr:remote>
 	</bean>
 	

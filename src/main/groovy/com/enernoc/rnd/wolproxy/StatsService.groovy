@@ -15,7 +15,7 @@ public class StatsService {
 	int avgHoursAsleepPerDay = 21 // ( 13 hours * 5 days + 44 hours * 2 days ) / 7
 	
 	def lastUpdate = new Date(0)
-	Map stats
+	private Map stats
 	
 	public Map showStats() {
 		def now = new Date()
@@ -31,6 +31,6 @@ public class StatsService {
 			this.stats = [ hostCount: hostCount, kwhTotal: kwhSaved, sinceDt : sinceDate ]
 			this.lastUpdate = now
 		}
-		stats
+		this.stats
 	}
 }

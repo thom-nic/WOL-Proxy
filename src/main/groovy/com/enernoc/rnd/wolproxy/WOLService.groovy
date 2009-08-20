@@ -47,12 +47,9 @@ public class WOLService {
 		host.ownerID = this.userID
 		if ( ! host.hostID ) { 
 			sql = this.hostInsert
-			host.hostID  = db.executeScalar( seqQuery )
+			host.hostID  = db.firstRow( seqQuery )[0]
 			host.createdDate = new Date()
 		}
-		// Verify owner of this hostID
-//		else if ( db.executeScalar( hostOwnerCheck, host ) < 1 ) 
-//				throw new RemoteException( "You are not the owner of this host" )
 
 		try {
 			def count = db.executeUpdate( sql, host )

@@ -3,13 +3,16 @@
  * It uses prototype.js 1.5.1 (http://www.prototypejs.org)
  * 
  * Author : Lalit Patel
+ * Contributor : Tom Nichols
  * Website: http://www.lalit.org/lab/jsoncookies
  * License: Apache Software License 2
  *          http://www.apache.org/licenses/LICENSE-2.0
- * Version: 0.5
+ * Version: 0.5-TMN
  * Updated: Jan 26, 2009 
  * 
  * Chnage Log:
+ *   v 0.5-TMN
+ *   -  Added support for JS Date in addition to seconds for 'expires'
  *   v 0.5
  *   -  Changed License from CC to Apache 2
  *   v 0.4
@@ -26,7 +29,7 @@ var CookieJar = Class.create();
 CookieJar.prototype = {
 
 	/**
-	 * Append before all cookie names to differntiate them.
+	 * Append before all cookie names to differentiate them.
 	 */
 	appendString: "__CJ_",
 
@@ -35,25 +38,26 @@ CookieJar.prototype = {
 	 */
 	initialize: function(options) {
 		this.options = {
-			expires: 3600,		// seconds (1 hr)
+			expires: '',		// date or # of seconds
 			path: '',			// cookie path
 			domain: '',			// cookie domain
 			secure: ''			// secure ?
 		};
 		Object.extend(this.options, options || {});
 
-		if (this.options.expires != '') {
-			var date = new Date();
-			date = new Date(date.getTime() + (this.options.expires * 1000));
+		if ( this.options.expires ) {
+			var date = this.options.expires.toGMTString ? 
+					this.options.expires :
+					new Date(new Date().getTime() + ( this.options.expires * 1000 ) );
 			this.options.expires = '; expires=' + date.toGMTString();
 		}
-		if (this.options.path != '') {
+		if ( this.options.path ) {
 			this.options.path = '; path=' + escape(this.options.path);
 		}
-		if (this.options.domain != '') {
+		if ( this.options.domain ) {
 			this.options.domain = '; domain=' + escape(this.options.domain);
 		}
-		if (this.options.secure == 'secure') {
+		if ( this.options.secure ) {
 			this.options.secure = '; secure';
 		} else {
 			this.options.secure = '';

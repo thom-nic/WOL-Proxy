@@ -54,6 +54,8 @@ public class NetworkInterfaceApplet extends Applet {
 		System.getSecurityManager().checkPermission( new AllPermission() );
 		log.info( "Applet has full security permissions" );
 		
+		this.checkJVMVersion();
+		
 		Host host = new Host();
 		for ( NetworkInterface iface : Collections.list(NetworkInterface.getNetworkInterfaces()) ) {
 			if ( iface.isLoopback() || iface.isPointToPoint() 
@@ -87,6 +89,17 @@ public class NetworkInterfaceApplet extends Applet {
 		}
 		log.warning( "Could not find a suitable NetworkInterface" );
 		throw new UnknownHostException( "Could not find a suitable NetworkInterface" );
+	}
+	
+	/* Verify we are using Java 6 */
+	protected void checkJVMVersion() throws RuntimeException {
+		try {
+			Class<?> c = Class.forName( "java.net.InterfaceAddress" );
+		}
+		catch ( ClassNotFoundException e ) {
+			throw new RuntimeException( "Please upgrade your browser's Java Plugin " +
+					"to v6 or greater" );
+		}
 	}
 	
 	protected String macToString( NetworkInterface iface ) throws SocketException {

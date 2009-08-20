@@ -120,7 +120,11 @@ app = {
 	guessHostInfo : function(evt) {
 		evt.stop();
 		try {
-			var host = $('applet').guessHostInfoPriv();
+			def applet = $('applet'); 
+			if ( ! applet.guessHostInfoPriv ) throw new Exception( 
+					"The 'guess' feature requires <a " +
+					"href='http://www.java.com/en/download/index.jsp'>the latest Java plugin</a>" )
+			var host = applet.guessHostInfoPriv();
 			console.log( "Got host from applet: ", host );
 			host.alias = '';
 			app.editHost( host );
@@ -139,7 +143,7 @@ app = {
 	},
 	
 	showStats : function() {
-		Stats.getStats( { 
+		Stats.showStats( { 
 			callback : function( stats ) {
 				var statPage = $('stats');
 				statPage.down('.hostCount').update( stats.hostCount );
@@ -216,13 +220,9 @@ app = {
 		app.showDialog(app.loginDialog).down('input').focus();
 	},
 	
-	tabSelectHandler : function(evt) {
+	tabSelect : function( evt ) {
 		var pageID = evt.findElement('a').hash;
 		pageID = pageID.substring(1,pageID.length);
-		app.tabSelect(pageID, evt);
-	},
-	
-	tabSelect : function( pageID, evt ) {
 		var loadScript;
 		$('content').select('.page').each(function(page) {
 			if ( page.id == pageID ) {
@@ -231,7 +231,6 @@ app = {
 			}
 			else page.hide();
 		});
-		evt.stop();
 		if ( loadScript ) eval( loadScript.textContent );
 		
 		$('tabMenu').select('li').invoke('removeClassName','selected');
@@ -244,9 +243,8 @@ app = {
   loadInitialTab : function() {
     var tabName = 'stats';
     var page = document.location.hash;
-    if ( page ) { // check page URL for document fragment
+    if ( page.length > 1 ) // check page URL for document fragment
       tabName = page.substring(1,page.length);
-    }
     else { // check cookie
         var cookie = app.cookies.get('tab');
         if ( cookie ) tabName = cookie;
@@ -254,7 +252,7 @@ app = {
     Util.fireEvent( $('tabMenu').down('.'+tabName), 'click' );
   },
 	
-	cookies : new CookieJar( { expires: Date.now().add( 30 ).days(), path: '.' } )
+	cookies : new CookieJar( { expires: Date.now().add( 30 ).days() } )
 };
 
 
@@ -277,8 +275,8 @@ Event.observe( window, 'load', function() {
 //	$('wakeBtn').observe('click', app.wakeHost );
 	$('hostInfoTable').select('td input').invoke('hide');
 	
-	$('tabMenu').observe('click', app.tabSelectHandler );
-	$('hostsLink').observe('click', app.tabSelectHandler );
+	$('tabMenu').observe('click', app.tabSelect );
+	$('hostsLink').observe('click', app.tabSelect );
 	
 	app.loadInitialTab();
 } );

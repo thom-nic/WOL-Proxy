@@ -1,0 +1,76 @@
+WOL Proxy is a technology showcase, as well as a handy little application.
+
+What does it do?
+
+The purpose of the application is simple: make it easier to use Wake-On-LAN 
+when you log into your office over your company's VPN.  Why is WOL hard to use?
+Well, for one, many free WOL clients are not very feature-ful, and more 
+importantly, if your VPN puts your local computer in a different subnet from 
+your corporate intranet, the WOL broadcast packet won't make it to the machine 
+you're trying to wake.  
+
+So what does this application do?  It is a web app that acts as a "WOL Proxy," 
+running on a server on your intranet.  Assuming you can access some HTTP server 
+once you've logged into your VPN, you browse to 
+http://intranet.mycompany.net/wol-proxy/, choose the machine you've configured 
+previously, and hit "Wake!" and it the WOL Proxy will send the WOL broadcast 
+to wake the workstation sleeping happily under your desk.
+
+Finally, this application helps you "guess" the network settings for the machine
+you want to wake.  While you're still in the office, you can browse to the WOL
+Proxy application, "Add" a new host, and then hit the "Guess!" button.  The 
+WOL Proxy app has a small embedded applet that will inspect your network 
+configuration and determine the most likely host name, MAC address and broadcast 
+address required to send the WOL packet to your workstation.
+
+Now, you can put your workstation to sleep at night and not feel guilty about
+wasting all those kilowatt-hours of electricity, just because of the off-chance
+that you might need to connect to your office computer on the weekend to access
+that stupid TPS report that you forgot to email to your boss.  
+
+
+So what makes this project so special?
+
+Well, nothing in particular, but I feel I've found a "secret recipie" for small, 
+narrow-use-case web applications.
+
+First, let me lay out some of my criteria:
+1.  The application requires very few pages.  In this case, it only requires one
+    page.  The page never reloads or navigates to another location.  This is 
+    very similar to how Gmail works.  This isn't strictly necessary, but it 
+    completely removes the need for complex link mapping and navigation 
+    frameworks.  Additionally, I don't even have to worry about 
+    ServletContext.getContextPath() since all hrefs can use relative paths.
+
+2.  Simple domain model, i.e. something where Hibernate is overkill.  Not that 
+    Hibernate is particularly difficult to use, but I'm talking less than a 
+    half-dozen tables in total.  (Actually, it wouldn't affect much if 
+    Hibernate were added.)
+    
+3.  Well, that's it, really.  But the solution is, IMO, beautiful :)
+
+The app uses DWR services, scoped using Spring (and optionally protected via 
+Spring Security annotations).  ALL client-server interaction uses JSON and Ajax. 
+This makes for a rich and smooth user experience.  However, this means that 
+_all_ UI logic is in Javascript (arguably where it should be).  This also means
+that the markup pages can be completely STATIC.  
+
+Yes, you read that right.  There is no dynamic markup rendering done by the 
+server.  No JSP tags or any of that crap.  Theoretically this should make it 
+extremely scalable.  But how can you do this?  Complex markup structures (i.e. 
+lists and tables of domain objects) are rendered via a simple node builder 
+method.  See src/main/webapp/js/util.js.  Admittedly this can become tedious, 
+but complex markup (e.g. a datagrid with nested tables) can be aided by using 
+static templates, retrieved by the client via Ajax, and then copied in a loop 
+using the DOM cloneNode() method.
+
+This also means that any REST client could be used as a front-end to the 
+application; e.g. a rich-client Flex or Silverlight app.  This is enforced by 
+the application's architecture because the service/ front-end separation is also 
+where the client/ server break is.  That is, DWR services on the server <->
+Javascript on the client.  This also forces you to properly secure your services
+(which they should be _anyway_, even if your UI logic were on the server side 
+and the services were not publicly accessible.)  Except for the fact that the 
+server hosts the static HTML, JS and CSS files, the UI is _completely_ client 
+based.  This is sort of like GWT, but without the Java-to-Javascript compiler.  
+Cool, huh? 
