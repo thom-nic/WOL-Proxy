@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.w3.org/1999/xhtml http://www.w3.org/2002/08/xhtml/xhtml1-transitional.xsd">
+<head>
+	<title>EnerNOC R&amp;D :: Wake On LAN Proxy</title>
+	<meta http-equiv="content-type" content="application/xhtml+xml; charset=utf-8" />
+
+	<link href="img/favicon.png" rel="icon" type="image/png" />
+	<link href="http://yui.yahooapis.com/2.5.1/build/reset-fonts-grids/reset-fonts-grids.css" rel="stylesheet" type="text/css" /><!--
+	<link href="reset-fonts-grids.css" rel="stylesheet" type="text/css" />
+	--><link rel="stylesheet" media="screen,projection" type="text/css" href="page.css" />
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/prototype/1.6/prototype.js" type="text/javascript"></script>
+	<!-- 
+	<script src="http://ajax.googleapis.com/ajax/libs/scriptaculous/1.8/scriptaculous.js?load=" type="text/javascript"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/scriptaculous/1.8/effects.js" type="text/javascript"></script>
+	<script src="js/prototype.js" type="text/javascript"></script>
+	 -->
+	<script src="dwr/engine.js" type="text/javascript"></script>
+	<script src="dwr/interface/WOL.js" type="text/javascript"></script>
+	<script src="dwr/interface/Stats.js" type="text/javascript"></script>
+	<script src="dwr/interface/Auth.js" type="text/javascript"></script>
+	<script src="js/util.js" type="text/javascript"></script>
+	<script src="js/date.js" type="text/javascript"></script>
+	<script src="js/cookiejar.js" type="text/javascript"></script>
+	<script src="js/application.js" type="text/javascript"></script>
+</head>
+
+<body>
+
+	<div id='main'>
+		<img src='img/spinner.gif' id='spinner' 
+			title='loading...' alt='loading...' style='display:none' />
+	 	
+		<h1>Wake On LAN Proxy!</h1>
+		
+    <ul id='tabMenu'>
+      <li><a class='stats' href='#stats'>Stats</a></li>
+      <li><a class='hosts' href='#hosts'>Hosts</a></li>
+    </ul>
+
+		<div id='content'>
+
+			<div id='status' class='error' style='display:none'></div>
+			
+			<div id='hosts' class='page' style='display:none'>
+				<div class='leftCol'>
+					<div>
+						<h2>Hosts</h2>
+						<a id='addLnk' title='Add a new host' href='#'>Add...</a>
+					</div>
+					<ul id='hostList'></ul>
+				</div>
+				
+				<div id='hostDetails' class='details'>
+					<h3 id='hostLabel'>Host Name</h3>
+					
+					<button id='wakeBtn'>Wake!</button>
+					
+					<form id='hostForm'>
+						<table id='hostInfoTable'>
+							<tr>
+								<th>Host Name</th>
+								<td class='hostName'><span class='label'> </span>
+									<input type='text' name='hostName'> </input></td>
+							</tr>
+							<tr>
+								<th>Alias (optional)</th>
+								<td class='alias'><span class='label'> </span>
+									<input type='text' name='alias'> </input></td>
+							</tr>
+							<tr>
+								<th>IP Address</th>
+								<td class='ip'><span class='label'> </span>
+									<input type='text' name='ip'> </input></td>
+							</tr>
+							<tr>
+								<th>Broadcast Address</th>
+								<td class='broadcastAddr'><span class='label'> </span>
+									<input type='text' name='broadcastAddr'> </input></td>
+							</tr>
+							<tr>
+								<th>MAC Address</th>
+								<td class='macAddress'><span class='label'> </span>
+									<input type='text' name='macAddress'> </input></td>
+							</tr>
+							<tr>
+								<th title="WOL Port">Port</th>
+								<td class='port'><span class='label'> </span>
+									<input type='text' name='port'> </input></td>
+							</tr>
+						</table>
+						<div class='btnBar'>
+							<a id='editLink' href='#' style='display:none'>Edit...</a>
+							<div id='saveCancel' style='display:none'>
+								<button id='guessBtn'>Guess!</button>
+								<button id='saveBtn'>Save</button>
+								<a id='cancel' href='#'>Cancel</a>
+								<a id='delete' href='#'>Delete</a>
+							</div>
+						</div>
+					</form>
+					
+				</div>
+				<span class='script'>app.getHostList();</span>
+			</div>
+			
+			<div class='page' id='stats' style='display:none'>
+				<div class='fullContent'>
+					<p>
+						<span class='hostCount'>(count)</span> hosts have been registered 
+						on this site, and a total of <span class='kwhTotal'>(kWh)</span> kWh 
+						have been conserved since <span class='sinceDt'>(date)</span> 
+						by putting these	machines in standby at night!
+					</p>
+					
+					<p>Go to the <a id='hostsLink' href='#hosts'>Hosts page</a> to add 
+							or access a machine!<br/>
+							Wait, what is this?  <a id='moreInfoLink' href='#about'>More Info.</a> 
+					</p>
+				</div>
+				<span class='script'>app.showStats();</span>
+			</div>
+			
+		</div>
+		
+		<!--[if !IE]> -->
+		<object classid="java:com/enernoc.rnd.wolproxy/applet/NetworkInterfaceApplet.class" 
+              type="application/x-java-applet"
+              archive="NetworkInterfaceApplet.jar" 
+              height="1" width="1" id='applet'>
+              
+		<!--<![endif]-->
+		<!--[if IE]>
+		<object classid="clsid:CAFEEFAC-0016-0000-0000-ABCDEFFEDCBA" 
+             codebase="http://java.sun.com/update/1.6.0/jinstall-6u13-windows-i586.cab"
+             height="1" width="1" id='applet'> 
+		<![endif]-->
+			<param name="code" value="com/enernoc.rnd.wolproxy/applet/NetworkInterfaceApplet" />
+  		<param name="archive" value="NetworkInterfaceApplet.jar" />
+  		<param name="persistState" value="false" />
+			<param name="cache_version" value="1.0" />
+	    <p><a href="http://www.java.com/en/download/index.jsp">Get the latest Java Plug-in.</a></p>
+		</object>
+		
+		<div id='footer' style='display:none'>
+			<span>Currently logged in as <span id='userStatus'></span>.</span>
+			<a href='#' id='logoutLink'>logout</a>
+		</div>
+	</div>
+	
+
+	<div id='dialogBox' style='display:none'>
+		<div id='dialogOverlay'>&nbsp;</div>
+		
+		<div id='loginDialog' class='dialog' style='display:none'>
+			<strong class='title'>Please log in</strong>
+			<div class='msg error' style='display:none'></div>
+			<div class='formRow'>
+				<label for='uid'>User</label> <input type='text' id='uid' />
+			</div>
+			<div class='formRow'>
+				<label for='pass'>Password</label> <input type='password' id='pass' />
+			</div>
+			<div class='buttonRow'>
+				<button id='login' title='Let me in!'>Log in</button>
+			</div>
+		</div>
+	</div>
+	
+</body>
+</html>

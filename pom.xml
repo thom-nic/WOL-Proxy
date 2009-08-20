@@ -1,0 +1,222 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.enernoc.rnd</groupId>
+  <artifactId>wol-proxy</artifactId>
+  <packaging>war</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>WOL Proxy</name>
+  <description>Web app to allow intranet computers to use WOL from a VPN</description>
+  <!--Build instructions:
+  		For a local development build, just do 'mvn package' or 
+  		'mvn jetty:run-exploded'.  -->
+  <url>http://rnd.enernoc.net/</url>
+  <dependencies>
+	  <dependency>
+  		<groupId>com.oracle</groupId>
+  		<artifactId>ojdbc14</artifactId>
+  		<version>10.2.0.3.0</version>
+  		<scope>runtime</scope>
+  	</dependency>
+    <dependency>
+      <groupId>hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <version>1.8.0.7</version>
+      <scope>test runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <version>1.2.2</version>
+    </dependency>
+    
+    <dependency>
+    	<groupId>org.codehaus.groovy</groupId>
+    	<artifactId>groovy</artifactId>
+    	<version>1.6.4</version>
+    </dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+    <dependency>
+	    <groupId>org.springframework</groupId>
+	    <artifactId>spring-web</artifactId>
+	    <version>${spring.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency> <!-- Needed for DWR's Spring support -->
+	    <groupId>org.springframework</groupId>
+	    <artifactId>spring-aop</artifactId>
+	    <version>${spring.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency> <!-- Spring proxy support. -->
+			<groupId>cglib</groupId>
+			<artifactId>cglib-nodep</artifactId>
+			<version>2.2</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+	    <groupId>org.springframework.security</groupId>
+	    <artifactId>spring-security-core-tiger</artifactId>
+	    <version>2.0.3</version>
+		</dependency>
+		<dependency> <!-- Class dependency by spring-security; not actually used -->
+	    <groupId>org.springframework</groupId>
+	    <artifactId>spring-dao</artifactId>
+	    <version>2.0.3</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency> <!-- Runtime dependency by Spring-security? -->
+			<groupId>aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>1.5.3</version>
+			<scope>runtime</scope>
+		</dependency> 
+		<dependency>
+			<groupId>org.springframework.ldap</groupId>
+			<artifactId>spring-ldap</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+    <dependency>
+	    <groupId>org.directwebremoting</groupId>
+	    <artifactId>dwr</artifactId>
+	    <version>2.0.3</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+	    <groupId>org.slf4j</groupId>
+	    <artifactId>slf4j-log4j12</artifactId>
+	    <version>1.5.2</version>
+	    <exclusions>
+	    	<exclusion>
+	    		<groupId>com.sun.jmx</groupId>
+	    		<artifactId>jmxri</artifactId>
+	    	</exclusion>
+	    	<exclusion>
+	    		<groupId>javax.jms</groupId>
+	    		<artifactId>jms</artifactId>
+	    	</exclusion>
+	    	<exclusion>
+	    		<groupId>com.sun.jdmk</groupId>
+	    		<artifactId>jmxtools</artifactId>
+	    	</exclusion>
+	    </exclusions>
+		</dependency>
+  	<dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.4</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+		<finalName>${project.artifactId}</finalName>
+		<filters>
+			<filter>src/main/filters/filter.properties</filter>
+  		<filter>src/main/filters/filter-${env}.properties</filter>
+		</filters>
+		<resources>
+  		<resource>
+    		<directory>src/main/resources/all</directory>
+    		<filtering>false</filtering>
+  		</resource>
+		</resources>
+  	<plugins>
+		  <plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-compiler-plugin</artifactId>
+		    <configuration>
+		       <source>1.5</source>
+		       <target>1.5</target>
+		    </configuration>
+		  </plugin>
+		  <plugin>
+		  	<groupId>org.apache.maven.plugins</groupId>
+		  	<artifactId>maven-war-plugin</artifactId>
+		  	<configuration>
+		  		<webResources>
+		  			<resource>
+		  				<directory>src/main/resources/web</directory>
+		  				<targetPath>WEB-INF</targetPath>
+		  				<filtering>true</filtering>
+		  			</resource>
+		  			<resource>
+		  				<directory>target</directory>
+		  				<includes><include>${applet.name}.jar</include></includes>
+		  				<filtering>false</filtering>
+		  			</resource>
+		  		</webResources>
+		  	</configuration>
+		  </plugin>
+			<plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>process-test-resources</phase>
+            <configuration>
+              <tasks>
+					<jar destfile="target/${applet.name}.jar" 
+						basedir="target/classes" includes="**/applet/*.class" />
+					
+					<signjar keystore="cert/keystore.jks" storepass="test123" alias="wol2"
+						jar="target/${applet.name}.jar" />
+              </tasks>
+            </configuration>
+            <goals> <goal>run</goal> </goals>
+          </execution>
+        </executions>
+      </plugin>
+		  <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>maven-jetty-plugin</artifactId>
+        <version>6.1.17</version>
+        <configuration>
+        	<!-- See http://docs.codehaus.org/display/JETTY/Maven+Jetty+Plugin -->
+        	<scanIntervalSeconds>5</scanIntervalSeconds>
+        </configuration>
+      </plugin>
+  		<plugin>
+  			<groupId>org.codehaus.groovy.maven</groupId>
+  			<artifactId>gmaven-plugin</artifactId>
+  			<version>1.0-rc-5</version>
+  			<executions>
+  				<execution>
+  					<goals>
+  						<goal>generateStubs</goal>
+  						<goal>compile</goal>
+  						<!-- <goal>generateTestStubs</goal> -->
+  						<goal>testCompile</goal>
+  					</goals>
+  				</execution>
+  			</executions>
+  		</plugin>
+      <plugin>
+        <groupId>com.samaxes.maven</groupId>
+        <artifactId>maven-minify-plugin</artifactId>
+        <version>1.1-SNAPSHOT</version>
+        <configuration>
+          <cssDir>.</cssDir>
+          <cssFilenames>
+          	<param>page.css</param>
+          </cssFilenames>
+				</configuration>
+			</plugin>
+  	</plugins>
+  </build>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>googlecode-releases</id>
+			<name>Google Code Maven repository of releases</name>
+			<url>http://maven-samaxes-repo.googlecode.com/svn/releases</url>
+		</pluginRepository>
+	</pluginRepositories>
+  <properties>
+  	<applet.name>NetworkInterfaceApplet</applet.name>
+  	<spring.version>2.5.6</spring.version>
+  	<maven.test.skip>true</maven.test.skip>
+	  <env>dev</env>
+	</properties>
+</project>

@@ -1,0 +1,75 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:dwr="http://www.directwebremoting.org/schema/spring-dwr"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:ctx="http://www.springframework.org/schema/context"
+  xmlns:security="http://www.springframework.org/schema/security"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/aop 
+    http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/security 
+    http://www.springframework.org/schema/security/spring-security-2.0.xsd
+    http://www.directwebremoting.org/schema/spring-dwr
+    http://www.directwebremoting.org/schema/spring-dwr-2.0.xsd">
+
+	<ctx:property-override location="WEB-INF/bean.properties" />
+
+	<import resource="env-beans.xml" />
+    
+	<dwr:configuration>
+		<dwr:convert type="bean" class="com.enernoc.rnd.wolproxy.Host">
+			<dwr:exclude method="metaClass" />
+		</dwr:convert>
+		<dwr:convert type="exception" class="java.lang.Exception">
+			<dwr:include method="message,lineNumber,cause" />
+		</dwr:convert>
+	</dwr:configuration>
+	
+	<!-- http://directwebremoting.org/dwr/server/spring -->
+	<bean id='wol' class='com.enernoc.rnd.wolproxy.WOLService'>
+		<property name="db" ref="db" /> <!-- See env-beans.xml -->
+		<property name="authService" ref="authService" />
+		<dwr:remote javascript="WOL">
+			<dwr:include method="getHosts" />
+			<dwr:include method="getHost" />
+			<dwr:include method="deleteHost" />
+			<dwr:include method="updateHost" />
+			<dwr:include method="wakeHost" />
+		</dwr:remote>
+	</bean>
+	
+	<bean id='stats' class='com.enernoc.rnd.wolproxy.StatsService'>
+		<property name="db" ref="db" />
+		<dwr:remote javascript="Stats">
+			<dwr:include method="getStats" />
+		</dwr:remote>
+	</bean>
+	
+	<bean id='authService' class='com.enernoc.rnd.wolproxy.AuthService' scope='session'>
+		<property name="authManager" ref='authManager' />
+		<dwr:remote javascript="Auth">
+			<dwr:include method='authenticate' />
+			<dwr:include method='getCurrentUser' />
+			<dwr:include method='logout' />
+		</dwr:remote>
+		<aop:scoped-proxy />
+	</bean>
+
+	
+	<!-- http://static.springframework.org/spring-security/site/reference/html/ldap.html -->
+	<security:ldap-authentication-provider user-search-filter="(sAMAccountName={0})" group-search-filter="(member={0})" 
+		user-search-base="OU=SBSUsers,OU=Users,OU=MyBusiness,DC=EnerNOC,DC=local" 
+		group-search-base="OU=Distribution Groups,OU=MyBusiness,DC=EnerNOC,DC=local"/>
+	<security:authentication-manager alias="authManager"/>
+	<security:global-method-security secured-annotations="enabled" />
+	<!-- http://static.springframework.org/spring-security/site/reference/html/ns-config.html#ns-minimal -->
+	<security:http>
+		<security:anonymous />
+		<security:intercept-url pattern="/**" access="ROLE_ANONYMOUS,ROLE_ENERNOC" />
+		<security:http-basic /> <!-- Not used, but needed to provide fake auth entry point -->
+	</security:http>
+	
+</beans>
