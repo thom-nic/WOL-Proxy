@@ -36,6 +36,7 @@ var Util = {
 	}
 }
 
+// Define dummy methods for platforms where Firebug is not installed.
 if ( typeof( console ) == "undefined" ) {
 	console = {
 		log : function() {},
@@ -45,4 +46,3 @@ if ( typeof( console ) == "undefined" ) {
 		error : function() {}
 	}
 }
-if ( ! console.debug ) console.debug = console.log;
