@@ -1,0 +1,31 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:security="http://www.springframework.org/schema/security"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/security 
+    http://www.springframework.org/schema/security/spring-security-2.0.xsd">
+
+	<security:ldap-server url="${ldap.url}" 
+		manager-dn="${ldap.mgr.dn}" manager-password="${ldap.mgr.pwd}" />
+		
+	<bean id='db' class="com.enernoc.rnd.wolproxy.Sql2" destroy-method="close">
+  	<constructor-arg type="javax.sql.DataSource">
+  		<bean class="org.apache.commons.dbcp.BasicDataSource">
+  			<property name="url" value="${sql.url}" />
+  			<property name="driverClassName" value="${sql.driver}" />
+  			<property name="username" value="${sql.user}" />
+  			<property name="password" value="${sql.passwd}" />
+  			<property name="maxActive" value="50" />
+  			<property name="maxIdle" value="10" />
+  			<property name="poolPreparedStatements" value="true" />
+  		</bean>
+  	</constructor-arg>
+  </bean>
+  
+  <bean class='com.enernoc.rnd.wolproxy.Bootstrap' init-method="init">
+  	<property name='db' ref='db' />
+  	<property name='sql' value='classpath:/wolProxy.sql' />
+  </bean>
+</beans>
+    
