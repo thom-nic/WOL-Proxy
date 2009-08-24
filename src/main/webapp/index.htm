@@ -53,6 +53,9 @@
 						<a id='addLnk' title='Add a new host' href='#'>Add...</a>
 					</div>
 					<ul id='hostList'></ul>
+					<div>
+						<a href='#help' id='helpLnk'>Help!</a>
+					</div>
 				</div>
 				
 				<div id='hostDetails' class='details'>
@@ -168,6 +171,31 @@
 			<div class='buttonRow'>
 				<button id='login' title='Let me in!'>Log in</button>
 			</div>
+		</div>
+		
+		<div id='helpDialog' class='dialog' style='display:none'>
+			<div class='closeBtn'>x</div>
+			<h3 class='title'>Help!</h3>
+			<h4>What do I do now?</h4>
+			<p>Use the form to enter the network information for the computer that you
+				want to wake remotely (i.e. the workstation at your desk, not
+				your laptop.)  </p>
+			<p>If you're currently using your workstation to view this
+				site, you can use the 'guess' button to input most of the host 
+				information for you.  This is recommended as it takes most of the 
+				guesswork out of entering this information.</p>
+				
+			<h4>Then What?</h4>
+			<p>Well, there's a little configuration you need to do on your workstation 
+				as well.  </p>
+			<h5>For Windows XP</h5>
+			<p><a href='http://scratchpad.wikia.com/wiki/Wake_On_LAN_Windows_Config'>
+					Follow the instructions here,</a> under the section entitled
+				"Wake On LAN Configuration in Windows XP."</p>
+						
+			<h5>For Linux</h5>
+			<p>See this page to <a href='http://ubuntuforums.org/showthread.php?t=234588'>
+				configure your Linux machine for WOL</a>.</p>
 		</div>
 	</div>
 	

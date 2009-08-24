@@ -120,10 +120,10 @@ app = {
 	guessHostInfo : function(evt) {
 		evt.stop();
 		try {
-			def applet = $('applet'); 
-			if ( ! applet.guessHostInfoPriv ) throw new Exception( 
-					"The 'guess' feature requires <a " +
-					"href='http://www.java.com/en/download/index.jsp'>the latest Java plugin</a>" )
+			var applet = $('applet'); 
+			if ( ! applet.guessHostInfoPriv ) 
+				throw new Exception( "The 'guess' feature requires <a " +
+					"href='http://www.java.com/en/download/index.jsp'>the latest Java plugin</a>" );
 			var host = applet.guessHostInfoPriv();
 			console.log( "Got host from applet: ", host );
 			host.alias = '';
@@ -172,12 +172,15 @@ app = {
 	  app.status.show();
 	},
 	
-	showDialog : function( dialogName ) {
+	showDialog : function( dialogName, clickToClose ) {
 		$('dialogBox').show();
+		if ( clickToClose ) 
+			$('dialogOverlay').observe('click', app.hideDialog );
 		return $(dialogName).show();
 	},
 	
 	hideDialog : function() {
+		$('dialogOverlay').stopObserving();
 		var visDialog;
 		var box = $('dialogBox');
 		box.select( '.dialog' ).each( function( d ) {
@@ -271,9 +274,9 @@ Event.observe( window, 'load', function() {
 	
 	$('addLnk').observe('click', app.editHost.curry(null) );
 	$('guessBtn').observe('click', app.guessHostInfo );
-//	$('editLink').observe('click', app.editHost );
-//	$('wakeBtn').observe('click', app.wakeHost );
 	$('hostInfoTable').select('td input').invoke('hide');
+	$('helpLnk').observe('click', app.showDialog.curry('helpDialog',true) );
+	$('dialogBox').select('.dialog .closeBtn').invoke( 'observe', 'click', app.hideDialog );
 	
 	$('tabMenu').observe('click', app.tabSelect );
 	$('hostsLink').observe('click', app.tabSelect );

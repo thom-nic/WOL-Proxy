@@ -29,7 +29,7 @@ h4 { font-size: 150% }
 
 h5 {
 	font-variant: small-caps;
-/*	font-weight: bold; */
+	font-weight: bold
 }
 
 input[type='text'], input[type='password'], textarea { 
@@ -43,13 +43,13 @@ button { vertical-align: middle }
 a, a:visited {
   color: #07244d;
   text-decoration: none;
-  border-bottom: dotted 1px #07244d; 
+  border-bottom: dotted 1px #07244d 
 }
 
 a:hover {
   color: #305b9c;
   text-decoration: none;
-  border-bottom: dotted 1px #305b9c;   
+  border-bottom: dotted 1px #305b9c   
 }
 
 p { margin: .4em 0 }
@@ -62,7 +62,7 @@ li { list-style-type: disc }
 	width: 70em;
 	margin: 0 auto;
 	background-color: #efefef;
-	min-height: 35em;
+	min-height: 35em
 }
 
 #spinner {
@@ -207,6 +207,14 @@ li { list-style-type: disc }
   background: transparent url("img/clear.gif") top left no-repeat;
 }
 
+.closeBtn {
+  float: right;
+  background-color: #ccc;
+  border: 1px solid #aaa;
+  padding: 1px 4px 3px 4px;
+  cursor: pointer;
+}
+
 #dialogBox {
 	position:absolute;
 	height:100%; width:100%;
@@ -241,7 +249,8 @@ li { list-style-type: disc }
 
 .dialog .title { 
 	text-align:center;
-	font-weight: bold 
+	font-weight: bold;
+	float: none
 }
 .dialog .msg { margin: 10px }
 .dialog .msg.error { padding: 6px }
