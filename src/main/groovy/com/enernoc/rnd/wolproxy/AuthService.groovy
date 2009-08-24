@@ -18,7 +18,7 @@ public class AuthService {
 	
 	public String authenticate( String user, String pass ) throws SpringSecurityException {
 		log.debug "user ${user} is loggin in..."
-		this.user = user; return
+		this.user = user; return user;
 		def auth = new UsernamePasswordAuthenticationToken(user,pass)
 		auth = authManager.authenticate( auth )
 		log.debug "user ${auth.principal} has authenticated"
