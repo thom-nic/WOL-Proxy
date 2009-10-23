@@ -84,13 +84,12 @@ public class WOLService {
 		
 		// TODO sleep for a little while before attempting to ping host.
 		def addr = ping( host )
-		if ( ! addr ) throw new RemoteException( 'Could not access host' + host.hostName )
 		/*if ( ! addr ) {
 			sendWOLPacket host, false
 			addr = ping( host )
 		}*/
 		
-		return [ hostName: host.alias, ip: addr.hostAddress ] 
+		return [ hostName: host.alias, ip: addr ] 
 	}
 	
 	public testHost( Host host ) {
@@ -117,26 +116,28 @@ public class WOLService {
 		log.debug "Sent WOL packet to {}", inet
 	}
 
-	protected InetAddress ping( host, attempts=2 ) {
+	protected String ping( host, attempts=2 ) {
 		def suffixes = ['','.enernoc.local','.enernoc.net']
 		def addr
-		suffixes.find {
+		addr = suffixes.find {
 			try {
-				addr = InetAddress.getByName( host.hostName + it )
-				return addr.isReachable( 12000 ) 
+				InetAddress.getByName( host.hostName + it ).isReachable 12000 
 			} catch (ex) { false }
 		}
-		if ( ! addr && host.ip ) try {
-			addr = InetAddress.getByName( host.ip )
-		}
+		if ( addr ) return host.hostName + addr
+		
+		if ( host.ip ) try {
+			if( InetAddress.getByName( host.ip ).isReachable( 12000 ) ) 
+				return host.ip
+		} 
 		catch ( ex ) {}
 		
-		if ( ! addr && attempts ) {
+		if ( attempts ) {
 			log.debug "Attempt failed to ping host ${host.hostName}"
 			Thread.sleep 5000
-			addr = ping( host, attempts-1 )
+			return ping( host, attempts-1 )
 		}
-		addr
+		throw new RemoteException( "Failed to ping host ${host.hostName}" )
 	}
 	
 	protected InetAddress getSubnet( host ) {
