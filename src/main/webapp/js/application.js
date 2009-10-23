@@ -1,8 +1,7 @@
 
 app = {
-	userID : 'tnichols',//null,
-	
 	getHostList : function() {
+		app.showCurrentUser();
 		WOL.getHosts( {
 			callback: function( hosts ) {
 			console.log( "Hosts", hosts );
@@ -198,6 +197,7 @@ app = {
 		// if user is not logged in but page was reloaded:
 		if ( app.footer.visible() ) return;
 		Auth.getCurrentUser( { callback : function(resp) {
+			if ( ! resp ) return;
 			$('userStatus').update(resp);
 			app.footer.show();			
 		}});
@@ -239,10 +239,13 @@ app = {
 			}
 			else page.hide();
 		});
-		if ( loadScript ) eval( loadScript.getText() );
+		if ( loadScript ) try {
+			eval( loadScript.getText() );
+		} catch( ex ) { console.error( "From script in tabSelect", ex ); }
 		
-		$('tabMenu').select('li').invoke('removeClassName','selected');
-		var tab = evt.findElement('li').addClassName('selected');
+		var tabs = $('tabMenu');
+		tabs.select('li').invoke('removeClassName','selected');
+		tabs.down('li.' + pageID).addClassName('selected');
 		
     // Remember which tab was open last via cookie.
     app.cookies.put( 'tab', pageID );
