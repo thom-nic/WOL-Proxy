@@ -79,7 +79,6 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
 			<version>${spring.version}</version>
-			<scope>runtime</scope>
 		</dependency> 
 		<dependency> <!-- Runtime dependency by Spring-security? -->
 			<groupId>aspectj</groupId>
