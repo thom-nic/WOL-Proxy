@@ -1,3 +1,4 @@
+-- Bootstrap script to create an temporal in-memory DB for HSQL. 
 create sequence host_seq as int start with 1;
 
 create table host (
@@ -13,4 +14,11 @@ create table host (
   
  	constraint idx_mac_addr unique (mac_address),
  	constraint idx_host_name unique (host_name)
+);
+
+create table persistent_logins (
+	username varchar(64) not null, 
+	series varchar(64) primary key, 
+	token varchar(64) not null, 
+	last_used timestamp not null
 );

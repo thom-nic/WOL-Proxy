@@ -213,6 +213,8 @@ li { list-style-type: disc }
   border: 1px solid #aaa;
   padding: 1px 4px 3px 4px;
   cursor: pointer;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px
 }
 
 #dialogBox {
@@ -236,6 +238,7 @@ li { list-style-type: disc }
 	margin: auto;
 	border: 10px solid #fd0;
 	-moz-border-radius: 15px;
+	-webkit-border-radius: 15px;
 	background-color: #fff;
 	top: 30%;
 	padding: 15px;

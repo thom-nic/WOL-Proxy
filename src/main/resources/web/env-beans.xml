@@ -9,18 +9,20 @@
 	<security:ldap-server url="${ldap.url}" 
 		manager-dn="${ldap.mgr.dn}" manager-password="${ldap.mgr.pwd}" />
 		
+	<bean id='dataSource' class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="url" value="${sql.url}" />
+		<property name="driverClassName" value="${sql.driver}" />
+		<property name="username" value="${sql.user}" />
+		<property name="password" value="${sql.passwd}" />
+		<property name="maxActive" value="20" />
+		<property name="maxIdle" value="2" />
+		<property name="poolPreparedStatements" value="true" /><!-- 
+		<property name='testWhileIdle' value='${sql.validate}' />
+		<property name='validationQuery' value='${sql.validation}' /> -->
+	</bean>
+	
 	<bean id='db' class="com.enernoc.rnd.wolproxy.Sql2" destroy-method="close">
-  	<constructor-arg type="javax.sql.DataSource">
-  		<bean class="org.apache.commons.dbcp.BasicDataSource">
-  			<property name="url" value="${sql.url}" />
-  			<property name="driverClassName" value="${sql.driver}" />
-  			<property name="username" value="${sql.user}" />
-  			<property name="password" value="${sql.passwd}" />
-  			<property name="maxActive" value="20" />
-  			<property name="maxIdle" value="5" />
-  			<property name="poolPreparedStatements" value="true" />
-  		</bean>
-  	</constructor-arg>
+  	<constructor-arg type="javax.sql.DataSource" ref="dataSource" />
   </bean>
   
   <bean class='com.enernoc.rnd.wolproxy.Bootstrap' init-method="init">

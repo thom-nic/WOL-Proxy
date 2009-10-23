@@ -120,6 +120,9 @@ app = {
 	guessHostInfo : function(evt) {
 		evt.stop();
 		try {
+			// called for IE if it's available; see ie-net-activex.js
+			if ( app.ie ) return app.ie.guessHostInfo();
+			
 			var applet = $('applet'); 
 			if ( ! applet.guessHostInfoPriv ) 
 				throw new Exception( "The 'guess' feature requires <a " +
@@ -224,7 +227,9 @@ app = {
 	},
 	
 	tabSelect : function( evt ) {
-		var pageID = evt.findElement('a').hash;
+		var elem = evt.findElement('a');
+		if ( ! elem ) elem = evt.element().down('a'); // for IE
+		var pageID = elem.hash;
 		pageID = pageID.substring(1,pageID.length);
 		var loadScript;
 		$('content').select('.page').each(function(page) {
@@ -234,7 +239,7 @@ app = {
 			}
 			else page.hide();
 		});
-		if ( loadScript ) eval( loadScript.textContent );
+		if ( loadScript ) eval( loadScript.getText() );
 		
 		$('tabMenu').select('li').invoke('removeClassName','selected');
 		var tab = evt.findElement('li').addClassName('selected');
