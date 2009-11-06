@@ -1,8 +1,7 @@
 
 app = {
-	userID : 'tnichols',//null,
-	
 	getHostList : function() {
+		app.showCurrentUser();
 		WOL.getHosts( {
 			callback: function( hosts ) {
 			console.log( "Hosts", hosts );
@@ -120,6 +119,9 @@ app = {
 	guessHostInfo : function(evt) {
 		evt.stop();
 		try {
+			// called for IE if it's available; see ie-net-activex.js
+			if ( app.ie ) return app.ie.guessHostInfo();
+			
 			var applet = $('applet'); 
 			if ( ! applet.guessHostInfoPriv ) 
 				throw new Exception( "The 'guess' feature requires <a " +
@@ -195,6 +197,7 @@ app = {
 		// if user is not logged in but page was reloaded:
 		if ( app.footer.visible() ) return;
 		Auth.getCurrentUser( { callback : function(resp) {
+			if ( ! resp ) return;
 			$('userStatus').update(resp);
 			app.footer.show();			
 		}});
@@ -224,7 +227,9 @@ app = {
 	},
 	
 	tabSelect : function( evt ) {
-		var pageID = evt.findElement('a').hash;
+		var elem = evt.findElement('a');
+		if ( ! elem ) elem = evt.element().down('a'); // for IE
+		var pageID = elem.hash;
 		pageID = pageID.substring(1,pageID.length);
 		var loadScript;
 		$('content').select('.page').each(function(page) {
@@ -234,10 +239,13 @@ app = {
 			}
 			else page.hide();
 		});
-		if ( loadScript ) eval( loadScript.textContent );
+		if ( loadScript ) try {
+			eval( loadScript.getText() );
+		} catch( ex ) { console.error( "From script in tabSelect", ex ); }
 		
-		$('tabMenu').select('li').invoke('removeClassName','selected');
-		var tab = evt.findElement('li').addClassName('selected');
+		var tabs = $('tabMenu');
+		tabs.select('li').invoke('removeClassName','selected');
+		tabs.down('li.' + pageID).addClassName('selected');
 		
     // Remember which tab was open last via cookie.
     app.cookies.put( 'tab', pageID );

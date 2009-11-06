@@ -16,6 +16,12 @@
   		<groupId>com.oracle</groupId>
   		<artifactId>ojdbc14</artifactId>
   		<version>10.2.0.3.0</version>
+  		<scope>optional</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>mysql</groupId>
+  		<artifactId>mysql-connector-java</artifactId>
+  		<version>5.1.6</version>
   		<scope>runtime</scope>
   	</dependency>
     <dependency>
@@ -69,6 +75,11 @@
 	    <version>2.0.4</version>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency> 
 		<dependency> <!-- Runtime dependency by Spring-security? -->
 			<groupId>aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
@@ -126,6 +137,10 @@
   		<filter>src/main/filters/filter-${env}.properties</filter>
 		</filters>
 		<resources>
+  		<resource>
+    		<directory>src/main/resources/${env}</directory>
+    		<filtering>false</filtering>
+  		</resource>
   		<resource>
     		<directory>src/main/resources/all</directory>
     		<filtering>false</filtering>
@@ -188,7 +203,7 @@
   		<plugin>
   			<groupId>org.codehaus.groovy.maven</groupId>
   			<artifactId>gmaven-plugin</artifactId>
-  			<version>1.0-rc-5</version>
+  			<version>1.0</version>
   			<executions>
   				<execution>
   					<goals>

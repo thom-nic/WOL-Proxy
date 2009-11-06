@@ -93,9 +93,7 @@ public class NetworkInterfaceApplet extends Applet {
 	
 	/* Verify we are using Java 6 */
 	protected void checkJVMVersion() throws RuntimeException {
-		try {
-			Class<?> c = Class.forName( "java.net.InterfaceAddress" );
-		}
+		try { Class.forName( "java.net.InterfaceAddress" ); }
 		catch ( ClassNotFoundException e ) {
 			throw new RuntimeException( "Please upgrade your browser's Java Plugin " +
 					"to v6 or greater" );
@@ -105,7 +103,7 @@ public class NetworkInterfaceApplet extends Applet {
 	protected String macToString( NetworkInterface iface ) throws SocketException {
 		StringBuffer sb = new StringBuffer();
 		for ( byte b : iface.getHardwareAddress() ) 
-			sb.append( String.format("%x",b) ).append(':');
+			sb.append( String.format("%02x",b) ).append(':');
 		return sb.deleteCharAt( sb.length()-1 ).toString();
 	}	
 }

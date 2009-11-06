@@ -70,6 +70,7 @@
 		<security:anonymous />
 		<security:intercept-url pattern="/**" access="ROLE_ANONYMOUS,ROLE_ENERNOC" />
 		<security:http-basic /> <!-- Not used, but needed to provide fake auth entry point -->
+		<!-- <security:remember-me data-source-ref="dataSource" user-service-ref="" />  -->
 	</security:http>
 	
 </beans>

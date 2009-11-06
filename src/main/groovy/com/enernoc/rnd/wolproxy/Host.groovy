@@ -5,7 +5,7 @@ package com.enernoc.rnd.wolproxy
  */
 public class Host {
 
-	int hostID // PK
+	Integer hostID // PK
 	String ownerID // FK
 	
 	String alias
@@ -14,7 +14,7 @@ public class Host {
 	String ip
 	String broadcastAddr
 	Date createdDate
-	int wolPort = 9
+	Integer wolPort = 9
 	
 	String getAlias() { alias ?: hostName }
 	
