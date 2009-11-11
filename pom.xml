@@ -212,12 +212,24 @@
         <groupId>com.samaxes.maven</groupId>
         <artifactId>maven-minify-plugin</artifactId>
         <version>1.1-SNAPSHOT</version>
-        <configuration>
-          <cssDir>.</cssDir>
-          <cssFilenames>
-          	<param>page.css</param>
-          </cssFilenames>
-				</configuration>
+        <executions>
+        	<execution>
+        		<phase>process-resources</phase>
+        		<goals><goal>minify</goal></goals>
+		        <configuration>
+		        	<jsFilenames>
+		        		<param>date.js</param>
+		        		<param>cookiejar.js</param>
+		        		<param>util.js</param>
+		        		<param>application.js</param>
+		        	</jsFilenames>
+		          <cssDir>.</cssDir>
+		          <cssFilenames>
+		          	<param>page.css</param>
+		          </cssFilenames>
+						</configuration>
+        	</execution>
+        </executions>
 			</plugin>
   	</plugins>
   </build>
