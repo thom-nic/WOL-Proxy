@@ -11,9 +11,12 @@ create table host (
   broadcast_addr varchar(20),
   port int,
   created_dttm date not null,
+  shared_group varchar(40),
   
  	constraint idx_mac_addr unique (mac_address),
- 	constraint idx_host_name unique (host_name)
+ 	constraint idx_host_name unique (host_name),
+ 	index idx_owner_id (owner_id),
+ 	index idx_shared_group (shared_group)
 );
 
 /* Pseudo-sequence. See: 

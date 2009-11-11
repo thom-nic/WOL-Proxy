@@ -15,6 +15,7 @@ public class Host {
 	String broadcastAddr
 	Date createdDate
 	Integer wolPort = 9
+	String sharedGroup
 	
 	String getAlias() { alias ?: hostName }
 	

@@ -53,6 +53,7 @@
 		<dwr:remote javascript="Auth">
 			<dwr:include method='authenticate' />
 			<dwr:include method='getCurrentUser' />
+			<dwr:include method='getGroups' />
 			<dwr:include method='logout' />
 		</dwr:remote>
 		<aop:scoped-proxy />

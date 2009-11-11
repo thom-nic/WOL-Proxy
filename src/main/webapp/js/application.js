@@ -36,9 +36,10 @@ app = {
 		table.down('.macAddress .label').update( host.macAddress );
 		table.down('.broadcastAddr .label').update( host.broadcastAddr );
 		table.down('.port .label').update( host.wolPort );
+		table.down('.sharedGroup .label').update( host.sharedGroup || '(No)' );
 
 		table.select('.label').invoke('show');
-		$('hostForm').select('input').invoke('hide');
+		$('hostForm').select('input,select').invoke('hide');
 		$('saveCancel').hide();
 		$('editLink').stopObserving('click')
 			.observe( 'click', app.editHost.curry(host) ).show();
@@ -63,13 +64,17 @@ app = {
 			table.down('.macAddress input').value = host.macAddress;
 			table.down('.broadcastAddr input').value = host.broadcastAddr;
 			table.down('.port input').value = host.wolPort;
+			table.down('.sharedGroup input').checked = (host.sharedGroup != null );
+			table.down('.sharedGroup select').disabled = (host.sharedGroup == null );
+			table.down('.sharedGroup select').value= host.sharedGroup;
+			
 			$('saveBtn').stopObserving().observe('click', app.saveHost.curry(host.hostID) );
 			if ( host.id ) $('delete').stopObserving().observe('click', 
 					app.deleteHost.curry(host.hostID) ).show();
 		}
 		
 		$('hostInfoTable').select('.label').invoke('hide');
-		form.select('input').invoke('show');
+		form.select('input,select').invoke('show');
 		$('cancel').stopObserving().observe( 'click', 
 					app.displayHost.curry(host) );
 		$('saveCancel').show();
@@ -196,10 +201,15 @@ app = {
 	showCurrentUser : function() {
 		// if user is not logged in but page was reloaded:
 		if ( app.footer.visible() ) return;
-		Auth.getCurrentUser( { callback : function(resp) {
-			if ( ! resp ) return;
-			$('userStatus').update(resp);
-			app.footer.show();			
+		Auth.getCurrentUser( { callback : function(user) {
+			if ( ! user ) return;
+			$('userStatus').update(user.name);
+			app.footer.show();
+			
+			var groupList = $( $('hostForm').sharedGroup ).update();
+			user.groups.each( function(g) {
+				groupList.insert({bottom:$N('option',{},g)});
+			});
 		}});
 	},
 	
@@ -210,13 +220,17 @@ app = {
 		});
 	},
 	
-	loginCallback : function(resp) {
+	loginCallback : function(user) {
 		app.hideDialog(app.loginDialog).down('.msg').hide();
 		app.loginDialog.select('input').invoke('clear');
-		$('userStatus').update(resp);
+		$('userStatus').update(user.name);
 		app.footer.show();
 		app.getHostList();
-		app.showCurrentUser();
+		
+		var groupList = $( $('hostForm').sharedGroup ).update();
+		user.groups.each( function(g) {
+			groupList.insert({bottom:$N('option',{},g)});
+		});
 	},
 	
 	logout : function(evt) {
@@ -285,7 +299,11 @@ Event.observe( window, 'load', function() {
 	$('hostInfoTable').select('td input').invoke('hide');
 	$('helpLnk').observe('click', app.showDialog.curry('helpDialog',true) );
 	$('dialogBox').select('.dialog .closeBtn').invoke( 'observe', 'click', app.hideDialog );
-	
+
+	$('sharedCheck').observe('click', function(evt) {
+		$('hostForm').sharedGroup.disabled= !( evt.element().checked );
+	});
+
 	$('tabMenu').observe('click', app.tabSelect );
 	$('hostsLink').observe('click', app.tabSelect );
 	
