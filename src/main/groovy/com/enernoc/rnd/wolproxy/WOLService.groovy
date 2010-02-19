@@ -1,6 +1,5 @@
 package com.enernoc.rnd.wolproxy
 
-import java.net.*
 import org.slf4j.Loggerimport org.slf4j.LoggerFactory
 import java.sql.SQLException
 import org.springframework.security.BadCredentialsException/**
