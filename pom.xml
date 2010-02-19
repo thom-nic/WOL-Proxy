@@ -81,11 +81,17 @@
 			<version>${spring.version}</version>
 		</dependency> 
 		<dependency> <!-- Runtime dependency by Spring-security? -->
-			<groupId>aspectj</groupId>
+			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
-			<version>1.5.3</version>
+			<version>1.6.6</version>
 			<scope>runtime</scope>
-		</dependency> 
+		</dependency>
+		<dependency> <!-- Runtime dependency by Spring-security? -->
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.6.6</version>
+			<scope>runtime</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.ldap</groupId>
 			<artifactId>spring-ldap</artifactId>
@@ -95,8 +101,8 @@
 	    <groupId>org.directwebremoting</groupId>
 	    <artifactId>dwr</artifactId>
 	    <version>2.0.3</version>
-			<scope>runtime</scope>
-		</dependency>
+			<!--<scope>runtime</scope>
+		--></dependency>
 		<dependency>
 	    <groupId>org.slf4j</groupId>
 	    <artifactId>slf4j-log4j12</artifactId>
