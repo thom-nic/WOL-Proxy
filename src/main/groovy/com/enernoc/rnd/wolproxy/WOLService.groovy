@@ -1,6 +1,5 @@
 package com.enernoc.rnd.wolproxy
 
-import java.net.*
 import org.slf4j.Loggerimport org.slf4j.LoggerFactory
 import java.sql.SQLException
 import org.springframework.security.BadCredentialsException/**
@@ -23,13 +22,23 @@ public class WOLService {
 	String hostOwnerCheck
 	
 	protected String getUserID() {
-		authService.currentUser 
+		authService.currentUser.name
 	}
 	
 	public List<Host> getHosts() {
-		if ( ! userID ) throw new BadCredentialsException("Please log in")
+		def user = authService.currentUser
+		if ( ! user?.name ) throw new BadCredentialsException("Please log in")
+
+		def listQuery = this.hostListQuery
+		def params = ''
+		for ( int i=0; i<user.groups.size(); i++ ) {
+			params += '?'
+			if ( i< user.groups.size()-1 ) params += ','
+		}
+		listQuery = listQuery.replaceFirst( ':inGroup', params )
+
 		def list = []
-		db.eachRow( hostListQuery, [userID] ) {
+		db.eachRow( listQuery, [userID] + user.groups ) {
 			list << new Host( it.toRowResult() )
 		}
 		list
