@@ -124,8 +124,8 @@ app = {
 			
 			var applet = $('applet'); 
 			if ( ! applet.guessHostInfoPriv ) 
-				throw new Exception( "The 'guess' feature requires <a " +
-					"href='http://www.java.com/en/download/index.jsp'>the latest Java plugin</a>" );
+				throw { message: "The 'guess' feature requires <a " +
+					"href='http://www.java.com/en/download/index.jsp'>the latest Java plugin</a>" };
 			var host = applet.guessHostInfoPriv();
 			console.log( "Got host from applet: ", host );
 			host.alias = '';
@@ -165,10 +165,10 @@ app = {
 		else if ( ex && ex.javaClassName && ex.javaClassName.endsWith( 'UndeclaredThrowableException' ) 
 				&& ex.cause ) return app.errHandler( errStr, ex.cause );
 		
-		var detail;
-		if ( ex && ex.javaClassName ) errStr =  ex.javaClassName+": " + ex.message;
-		else  detail = ex;
-		if ( ! detail ) detail = '';
+		errStr = errStr || "";
+		var detail = '';
+		if ( ex && ex.javaClassName ) detail =  ex.javaClassName + ": ";
+		detail += ex.message || '';
 	  app.status.addClassName( 'error' );
 	  app.status.update( '<strong>Error</strong>: ' + errStr + '<br/>' + detail );
 	  app.status.show();
