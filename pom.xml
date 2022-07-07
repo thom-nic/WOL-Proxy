@@ -255,7 +255,7 @@
 	</pluginRepositories>
   <properties>
   	<applet.name>NetworkInterfaceApplet</applet.name>
-  	<spring.version>2.5.6</spring.version>
+  	<spring.version>3.2.5.RELEASE</spring.version>
   	<maven.test.skip>true</maven.test.skip>
 	  <env>dev</env>
 	</properties>
